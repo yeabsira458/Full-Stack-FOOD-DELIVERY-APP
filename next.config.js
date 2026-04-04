@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  serverExternalPackages: ["@prisma/client", "pg"],
+  experimental: {
+    serverComponentsExternalPackages: ["@prisma/client", "pg"],
+  },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

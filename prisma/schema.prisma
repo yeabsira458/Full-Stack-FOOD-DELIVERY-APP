@@ -1,27 +1,25 @@
-// Corrected Prisma Schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+
 }
 
 model Category {
   id        String    @id @default(cuid())
-  createdAt DateTime  @default(now())
+  createdAt DateTime  @default(now()) // Capital D, Capital T
   title     String
   desc      String
   color     String
   img       String
-  slug      String    @unique
+  slug      String    @unique // Capital S
   products  Product[]
 }
 
 model Product {
-  id         String   @id @default(cuid()) // Fixed @Id to @id
+  id         String   @id @default(cuid())
   createdAt  DateTime @default(now())
   title      String
   desc       String
@@ -30,7 +28,7 @@ model Product {
   isFeatured Boolean  @default(false)
   options    Json[]
   category   Category @relation(fields: [catSlug], references: [slug])
-  catSlug    String   // This field is required to hold the relation value
+  catSlug    String
 }
 
 model Order {

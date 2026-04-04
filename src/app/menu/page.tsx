@@ -1,11 +1,13 @@
-import { menu } from "@/data";
 import Link from "next/link";
 import React from "react";
 
-const MenuPage = () => {
+const MenuPage = async () => {
+  const res = await fetch("/api/categories");
+  const categories = await res.json();
+
   return (
     <div className="p-4 lg:px-20 xl:px-40 min-h-[calc(100vh-6rem)] md:min-h-[calc(100vh-9rem)] flex flex-col md:flex-row items-center bg-white">
-      {menu.map((category) => (
+      {categories.map((category) => (
         <Link
           href={`/menu/${category.slug}`}
           key={category.id}
