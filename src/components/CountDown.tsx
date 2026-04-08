@@ -1,44 +1,28 @@
-// WITH A LIBRARY
-// "use client"
-// import React from 'react'
-// import Countdown from 'react-countdown'
-
-// const endingDate = new Date("2023-07-25")
-
-// const CountDown = () => {
-//   return (
-//     <Countdown className='font-bold text-5xl text-yellow-300' date={endingDate}/>
-//   )
-// }
-
-// export default CountDown
-
-// WITHOUT A LIBRARY
 "use client";
 import React, { useState, useEffect } from "react";
 
 const CountDown = () => {
-  let difference = +new Date(`4/3/2026`) - +new Date();
-  const [delay, setDelay] = useState(difference);
-
-  const d = Math.floor(difference / (1000 * 60 * 60 * 24));
-  const h = Math.floor((difference / (1000 * 60 * 60)) % 24);
-  const m = Math.floor((difference / 1000 / 60) % 60);
-  const s = Math.floor((difference / 1000) % 60);
+  const [mounted, setMounted] = useState(false);
+  const targetDate = new Date(`7/3/2026`).getTime();
+  const [timeLeft, setTimeLeft] = useState(targetDate - Date.now());
 
   useEffect(() => {
+    setMounted(true); // Tell React we are now in the browser
     const timer = setInterval(() => {
-      setDelay(delay - 1);
+      setTimeLeft(targetDate - Date.now());
     }, 1000);
 
-    if (delay === 0) {
-      clearInterval(timer);
-    }
+    return () => clearInterval(timer);
+  }, [targetDate]);
 
-    return () => {
-      clearInterval(timer);
-    };
-  });
+  // Don't render anything on the server to prevent Hydration mismatch
+  if (!mounted) return null;
+
+  const d = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+  const h = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
+  const m = Math.floor((timeLeft / 1000 / 60) % 60);
+  const s = Math.floor((timeLeft / 1000) % 60);
+
   return (
     <span className="font-bold text-5xl text-yellow-300">
       {d}:{h}:{m}:{s}
