@@ -15,7 +15,8 @@ export const ORDER_COLLECTION_ID =
   process.env.NEXT_PUBLIC_APPWRITE_ORDER_COLLECTION_ID!;
 export const USER_COLLECTION_ID =
   process.env.NEXT_PUBLIC_APPWRITE_USER_COLLECTION_ID!;
-
+export const PRODUCT_COLLECTION_ID =
+  process.env.NEXT_PUBLIC_APPWRITE_PRODUCT_COLLECTION_ID!;
 // 4. Export the sync function so AuthProvider can call it
 export const syncUserToDatabase = async (loggedInUser: any) => {
   try {

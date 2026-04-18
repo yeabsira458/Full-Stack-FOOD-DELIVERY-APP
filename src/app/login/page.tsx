@@ -1,6 +1,6 @@
 "use client";
 import { useAuth } from "@/components/AuthProvider";
-import { account } from "@/app/utills/appwrite"; // Using your specific folder spelling
+import { account } from "@/app/utills/appwrite";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -18,10 +18,28 @@ const LoginPage = () => {
     }
   }, [user, router]);
 
+  //kezi
+  // Inside LoginPage.tsx
+  useEffect(() => {
+    if (user) {
+      // If they have items in their cart, send them to payment immediately
+      // Otherwise, send them to the homepage
+      const savedCart = localStorage.getItem("massimo_cart");
+      const hasItems = savedCart ? JSON.parse(savedCart).length > 0 : false;
+
+      if (hasItems) {
+        router.push("/pay");
+      } else {
+        router.push("/");
+      }
+    }
+  }, [user, router]);
+  //eskezih
+
   const signInWithGoogle = () => {
     // Appwrite OAuth2 handles the redirect for you
     account.createOAuth2Session(
-      OAuthProvider.Google, // 2. Change "google" to this Enum
+      OAuthProvider.Google,
       "http://localhost:3000",
       "http://localhost:3000/login",
     );
@@ -31,10 +49,7 @@ const LoginPage = () => {
 
   return (
     <div className="p-4 h-[calc(100vh-6rem)] md:h-[calc(100vh-9rem)] flex items-center justify-center">
-<<<<<<< HEAD
-=======
       {/* BOX */}
->>>>>>> 410e03f1cad0d8007a443da59206d72edc5877cb
       <div className="flex flex-col md:flex-row h-full w-full shadow-2xl rounded-md overflow-hidden md:h-[70%] lg:w-[60%] 2xl:w-1/2">
         {/* IMAGE CONTAINER */}
         <div className="relative h-1/3 w-full md:h-full md:w-1/2">
@@ -50,8 +65,7 @@ const LoginPage = () => {
         <div className="p-10 flex flex-col justify-center gap-8 md:w-1/2 bg-white">
           <h1 className="font-bold text-xl xl:text-3xl">Welcome</h1>
           <p className="text-gray-600">
-<<<<<<< HEAD
-            Log into your account using your social provider
+            Log into your account or create a new one using social buttons
           </p>
 
           <div className="flex flex-col gap-4">
@@ -59,13 +73,6 @@ const LoginPage = () => {
               onClick={signInWithGoogle}
               className="flex items-center gap-4 p-4 ring-1 ring-orange-100 rounded-md hover:bg-orange-50 transition"
             >
-=======
-            Log into your account or create a new one using social buttons
-          </p>
-
-          <div className="flex flex-col gap-4">
-            <button className="flex items-center gap-4 p-4 ring-1 ring-orange-100 rounded-md hover:bg-orange-50 transition">
->>>>>>> 410e03f1cad0d8007a443da59206d72edc5877cb
               <Image
                 src="/google.png"
                 alt="Google"
