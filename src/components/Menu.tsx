@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import CartIcon from "./CartIcon";
+import { useAuth } from "@/components/AuthProvider"; // 1. Import hook
+import { account } from "@/app/utills/appwrite"; // 2. Import account for logout
 
 const links = [
   { id: 1, title: "Homepage", url: "/" },
@@ -14,31 +16,20 @@ const links = [
 
 const Menu = () => {
   const [open, setOpen] = useState(false);
+  const { user } = useAuth(); // 3. Get user from Context
 
-  // TEMPORARY
-  const user = false;
+  const handleLogout = async () => {
+    try {
+      await account.deleteSession("current");
+      setOpen(false); // Close menu on logout
+      window.location.reload();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <div>
-      {/* LONG WAY */}
-      {/* {!open ? (
-        <Image
-          src="/open.png"
-          alt=""
-          width={20}
-          height={20}
-          onClick={() => setOpen(true)}
-        />
-      ) : (
-        <Image
-          src="/close.png"
-          alt=""
-          width={20}
-          height={20}
-          onClick={() => setOpen(false)}
-        />
-      )} */}
-      
-      {/* SHORTCUT */}
       <Image
         src={open ? "/close.png" : "/open.png"}
         alt=""
@@ -55,24 +46,22 @@ const Menu = () => {
             </Link>
           ))}
 
-          {/* LONG WAY */}
-          {/* {!user ? (
+          {/* DYNAMIC AUTH LINKS */}
+          {!user ? (
             <Link href="/login" onClick={() => setOpen(false)}>
               Login
             </Link>
           ) : (
-            <Link href="/orders" onClick={() => setOpen(false)}>
-              Orders
-            </Link>
-          )} */}
+            <>
+              <Link href="/orders" onClick={() => setOpen(false)}>
+                Orders
+              </Link>
+              <span className="cursor-pointer" onClick={handleLogout}>
+                Logout
+              </span>
+            </>
+          )}
 
-          {/* SHORTCUT */}
-          <Link
-            href={user ? "/orders" : "login"}
-            onClick={() => setOpen(false)}
-          >
-            {user ? "Orders" : "Login"}
-          </Link>
           <Link href="/cart" onClick={() => setOpen(false)}>
             <CartIcon />
           </Link>
