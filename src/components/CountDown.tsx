@@ -3,19 +3,27 @@ import React, { useState, useEffect } from "react";
 
 const CountDown = () => {
   const [mounted, setMounted] = useState(false);
+
+  // Set your target date here
   const targetDate = new Date(`7/3/2026`).getTime();
   const [timeLeft, setTimeLeft] = useState(targetDate - Date.now());
 
   useEffect(() => {
-    setMounted(true); // Tell React we are now in the browser
+    setMounted(true); // Ensures this only runs on the client side
+
     const timer = setInterval(() => {
-      setTimeLeft(targetDate - Date.now());
+      const calculatedTime = targetDate - Date.now();
+      if (calculatedTime >= 0) {
+        setTimeLeft(calculatedTime);
+      } else {
+        clearInterval(timer);
+      }
     }, 1000);
 
     return () => clearInterval(timer);
   }, [targetDate]);
 
-  // Don't render anything on the server to prevent Hydration mismatch
+  // Prevent Hydration error by not rendering on server
   if (!mounted) return null;
 
   const d = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
