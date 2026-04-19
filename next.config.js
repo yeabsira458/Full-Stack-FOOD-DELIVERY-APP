@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverComponentsExternalPackages: ["@prisma/client", "pg"],
-  },
+  /* Appwrite works perfectly with standard Next.js settings */
 };
 
 module.exports = nextConfig;
