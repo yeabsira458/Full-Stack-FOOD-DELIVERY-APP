@@ -1,5 +1,5 @@
 import Notification from "@/components/Notification";
-
+import { Toaster } from "react-hot-toast";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Navbar from "@/components/Navbar";
@@ -25,8 +25,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthProvider>
           <CartProvider>
+            <Notification />
             <Navbar />
             {children}
+            <Toaster />
             <Footer />
           </CartProvider>
         </AuthProvider>

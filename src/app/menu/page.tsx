@@ -3,7 +3,6 @@ import React from "react";
 import { getCategories } from "@/app/utills/categoryActions";
 
 const MenuPage = async () => {
-  // 1. Fetch data from Appwrite
   const categories = await getCategories();
 
   return (
@@ -11,20 +10,22 @@ const MenuPage = async () => {
       {categories.map((category: any) => (
         <Link
           href={`/menu/${category.slug}`}
-          key={category.$id} // Using Appwrite $id
-          className="w-full h-1/3 md:h-[60vh] flex-1 bg-cover p-8 transition-all duration-300 hover:opacity-90"
+          key={category.$id}
+          className="w-full h-1/3 md:h-[60vh] flex-1 bg-cover p-8 transition-all duration-300 hover:scale-105"
           style={{ backgroundImage: `url(${category.img})` }}
         >
-          {/* Using category.color from your DB */}
           <div style={{ color: category.color || "black" }} className="w-1/2">
             <h1 className="uppercase font-bold text-3xl">{category.title}</h1>
             <p className="text-sm my-8 font-semibold">{category.desc}</p>
             <button
               style={{
-                backgroundColor: category.color || "red",
-                color: category.color === "black" ? "white" : "black",
+                backgroundColor:
+                  category.color === "black"
+                    ? "white"
+                    : category.color || "red",
+                color: category.color === "black" ? "black" : "white",
               }}
-              className="hidden 2xl:block py-2 px-4 rounded-md font-bold mt-4"
+              className="hidden 2xl:block py-2 px-4 rounded-md font-bold mt-4 uppercase"
             >
               Explore
             </button>

@@ -1,22 +1,19 @@
-"use client"; // Must be a client component to use the Auth context
+"use client";
 import React from "react";
 import Menu from "./Menu";
 import Link from "next/link";
 import CartIcon from "./CartIcon";
 import Image from "next/image";
-import { useAuth } from "@/components/AuthProvider"; // Import the hook
-import { account } from "@/app/utills/appwrite"; // Import account for logout
-import { redirect } from "next/dist/server/api-utils";
+import { useAuth } from "@/components/AuthProvider";
+import { account } from "@/app/utills/appwrite";
 
 const Navbar = () => {
-  // Use the real user data from your AuthProvider
   const { user, loading } = useAuth();
 
   const handleLogout = async () => {
     try {
-      await account.deleteSession("current"); // Ends the Appwrite session
-
-      window.location.href = "/"; // Redirect to login page after logout
+      await account.deleteSession("current");
+      window.location.href = "/";
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -44,10 +41,9 @@ const Navbar = () => {
       <div className="hidden md:flex gap-4 items-center justify-end flex-1">
         <div className="md:absolute top-3 r-2 lg:static flex items-center gap-2 cursor-pointer bg-orange-300 px-1 rounded-md">
           <Image src="/phone.png" alt="" width={20} height={20} />
-          <span>123 456 78</span>
+          <span>945854375 </span>
         </div>
 
-        {/* Dynamic Button Logic */}
         {!user ? (
           <Link href="/login">Login</Link>
         ) : (
@@ -58,6 +54,7 @@ const Navbar = () => {
             </span>
           </div>
         )}
+        {/* This is now dynamic */}
         <CartIcon />
       </div>
     </div>
