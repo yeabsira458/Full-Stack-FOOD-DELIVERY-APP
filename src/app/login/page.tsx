@@ -1,12 +1,11 @@
 "use client";
 import { useAuth } from "@/components/AuthProvider";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { account } from "@/app/utills/appwrite"; // Adjusted path
-import { OAuthProvider } from "appwrite";
-import { handleAuth } from "@/app/utills/auth"; // Import the new logic
+import { account, syncUserToDatabase } from "@/app/utills/appwrite";
+import { ID } from "appwrite"; // Added this back
+import { handleAuth } from "@/app/utills/auth";
 
 const LoginPage = () => {
   const { user, loading } = useAuth();
@@ -15,8 +14,8 @@ const LoginPage = () => {
   // State for Email/Password
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState(""); // Needed for new users
-  const [isRegister, setIsRegister] = useState(false); // Toggle between Login/Register
+  const [name, setName] = useState("");
+  const [isRegister, setIsRegister] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -26,24 +25,16 @@ const LoginPage = () => {
     }
   }, [user, router]);
 
-  // Handle Manual Auth
+  // FIXED: Removed "export" and "ID" errors
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Pass name only if registering
+    // We pass the 'name' only if we are in register mode
     await handleAuth(email, password, isRegister ? name : undefined);
   };
 
   const signInWithGoogle = () => {
-    // FIX: Use window.location.origin instead of localhost:3000
-    const origin =
-      typeof window !== "undefined"
-        ? window.location.origin
-        : "http://localhost:3000";
-    account.createOAuth2Session(
-      OAuthProvider.Google,
-      origin,
-      `${origin}/login`,
-    );
+    const redirectUrl = window.location.origin;
+    account.createOAuth2Session("google", redirectUrl, `${redirectUrl}/login`);
   };
 
   if (loading) return <div className="p-4 text-center">Loading...</div>;
@@ -53,7 +44,12 @@ const LoginPage = () => {
       <div className="flex flex-col md:flex-row h-full w-full shadow-2xl rounded-md overflow-hidden lg:w-[70%] 2xl:w-1/2 bg-white">
         {/* IMAGE CONTAINER */}
         <div className="relative hidden md:block md:w-1/2">
-          <Image src="/loginBg.png" alt="" fill className="object-cover" />
+          <Image
+            src="/loginBg.png"
+            alt="Login Background"
+            fill
+            className="object-cover"
+          />
         </div>
 
         {/* FORM CONTAINER */}
@@ -62,13 +58,12 @@ const LoginPage = () => {
             {isRegister ? "Create Account" : "Welcome Back"}
           </h1>
 
-          {/* EMAIL/PASS FORM */}
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             {isRegister && (
               <input
                 type="text"
                 placeholder="Full Name"
-                className="p-3 ring-1 ring-gray-200 rounded-md outline-orange-500"
+                className="p-3 ring-1 ring-gray-200 rounded-md outline-orange-500 text-black"
                 onChange={(e) => setName(e.target.value)}
                 required
               />
@@ -76,18 +71,21 @@ const LoginPage = () => {
             <input
               type="email"
               placeholder="Email Address"
-              className="p-3 ring-1 ring-gray-200 rounded-md outline-orange-500"
+              className="p-3 ring-1 ring-gray-200 rounded-md outline-orange-500 text-black"
               onChange={(e) => setEmail(e.target.value)}
               required
             />
             <input
               type="password"
               placeholder="Password"
-              className="p-3 ring-1 ring-gray-200 rounded-md outline-orange-500"
+              className="p-3 ring-1 ring-gray-200 rounded-md outline-orange-500 text-black"
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <button className="bg-orange-500 text-white p-3 rounded-md hover:bg-orange-600 transition">
+            <button
+              type="submit"
+              className="bg-orange-500 text-white p-3 rounded-md hover:bg-orange-600 transition"
+            >
               {isRegister ? "Sign Up" : "Login"}
             </button>
           </form>
@@ -99,6 +97,7 @@ const LoginPage = () => {
                 : "Don't have an account?"}
             </span>
             <button
+              type="button"
               onClick={() => setIsRegister(!isRegister)}
               className="text-orange-500 underline font-semibold"
             >
@@ -113,16 +112,13 @@ const LoginPage = () => {
             </span>
           </div>
 
-          {/* SOCIAL BUTTONS */}
-          <div className="flex flex-col gap-2">
-            <button
-              onClick={signInWithGoogle}
-              className="flex items-center justify-center gap-4 p-3 ring-1 ring-orange-100 rounded-md hover:bg-orange-50"
-            >
-              <Image src="/google.png" alt="" width={20} height={20} />
-              <span>Continue with Google</span>
-            </button>
-          </div>
+          <button
+            onClick={signInWithGoogle}
+            className="flex items-center justify-center gap-4 p-3 ring-1 ring-orange-100 rounded-md hover:bg-orange-50 transition"
+          >
+            <Image src="/google.png" alt="Google" width={20} height={20} />
+            <span className="text-black">Continue with Google</span>
+          </button>
         </div>
       </div>
     </div>
