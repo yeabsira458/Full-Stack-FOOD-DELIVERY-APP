@@ -16,8 +16,8 @@ const CategoryPage = async ({ params }: { params: { category: string } }) => {
   if (!products || products.length === 0) {
     return (
       <div className="min-h-[calc(100vh-6rem)] flex items-center justify-center text-red-500 font-bold p-4 text-center">
-        No products found for "{params.category}". <br />
-        Check that your Appwrite Product collection has "Read" permissions
+        No products found for &quot;{params.category}&quot;. <br />
+        Check that your Appwrite Product collection has &quot;Read&quot; permissions
         enabled for Role: Any.
       </div>
     );
