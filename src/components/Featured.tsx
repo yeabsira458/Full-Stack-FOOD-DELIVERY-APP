@@ -37,7 +37,7 @@ const Featured = () => {
               </h1>
               <p className="p-4 2xl:p-8 text-sm md:text-base">{item.desc}</p>
               <span className="text-xl font-bold">${item.price}</span>
-              <button 
+              <button
                 onClick={() => {
                   addToCart(item); // Add the specific item to the cart state
                   toast.success(`${item.title} added to cart!`);

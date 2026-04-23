@@ -33,8 +33,11 @@ const LoginPage = () => {
   };
 
   const signInWithGoogle = () => {
-    const redirectUrl = window.location.origin;
-    account.createOAuth2Session("google", redirectUrl, `${redirectUrl}/login`);
+    account.createOAuth2Session(
+      "google",
+      "https://full-stack-food-delivery-yeabsira458s-projects.vercel.app/", // Success
+      "https://full-stack-food-delivery-yeabsira458s-projects.vercel.app/login", // Failure
+    );
   };
 
   if (loading) return <div className="p-4 text-center">Loading...</div>;
