@@ -4,8 +4,11 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { account, syncUserToDatabase } from "@/app/utills/appwrite";
-import { ID } from "appwrite"; // Added this back
+import { ID, OAuthProvider } from "appwrite"; // Added this back
 import { handleAuth } from "@/app/utills/auth";
+// At the top of your LoginPage.tsx
+// import { account, syncUserToDatabase } from "@/app/utills/appwrite";
+// import { ID, OAuthProvider } from "appwrite"; // Import OAuthProvider here
 
 const LoginPage = () => {
   const { user, loading } = useAuth();
@@ -34,9 +37,9 @@ const LoginPage = () => {
 
   const signInWithGoogle = () => {
     account.createOAuth2Session(
-      "google",
-      "https://full-stack-food-delivery-yeabsira458s-projects.vercel.app/", // Success
-      "https://full-stack-food-delivery-yeabsira458s-projects.vercel.app/login", // Failure
+      OAuthProvider.Google, // This fixes the Type Error in your screenshot
+      "https://full-stack-food-delivery-yeabsira458s-projects.vercel.app/",
+      "https://full-stack-food-delivery-yeabsira458s-projects.vercel.app/login",
     );
   };
 
