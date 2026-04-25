@@ -19,11 +19,11 @@ const LoginPage = () => {
   }, [user, router]);
 
   const signInWithGoogle = () => {
-    // This handles BOTH registration and login automatically
     account.createOAuth2Session(
       OAuthProvider.Google,
-      "https://full-stack-food-delivery-yeabsira458s-projects.vercel.app/",
-      "https://full-stack-food-delivery-yeabsira458s-projects.vercel.app/login",
+      // Change these to your actual active Vercel production URL
+      "https://full-stack-food-delivery-app-rzsi.vercel.app/",
+      "https://full-stack-food-delivery-app-rzsi.vercel.app/login",
     );
   };
 
