@@ -22,7 +22,7 @@ const LoginPage = () => {
             {
               name: user.name,
               email: user.email,
-            }
+            },
           );
           console.log("New user registered successfully.");
         } catch (err: any) {
@@ -45,30 +45,37 @@ const LoginPage = () => {
   const signInWithGoogle = () => {
     account.createOAuth2Session(
       OAuthProvider.Google,
-      "https://full-stack-food-delivery-app-rzsi.vercel.app/", // Success URL
-      "https://full-stack-food-delivery-app-rzsi.vercel.app/login" // Failure URL
+      "https://full-stack-food-delivery-app-five.vercel.app/", // Success URL
+      "https://full-stack-food-delivery-app-five.vercel.app/login", // Failure URL
     );
   };
 
-  if (loading) return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-orange-500"></div>
-    </div>
-  );
+  if (loading)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-orange-500"></div>
+      </div>
+    );
 
   return (
     <div className="p-4 min-h-[calc(100vh-6rem)] flex items-center justify-center bg-gray-50">
       <div className="flex flex-col md:flex-row h-full w-full shadow-2xl rounded-md overflow-hidden lg:w-[70%] 2xl:w-1/2 bg-white max-w-[1000px]">
-        
         {/* IMAGE SIDE */}
         <div className="relative hidden md:block md:w-1/2 min-h-[400px]">
-          <Image src="/loginBg.png" alt="Massimo" fill className="object-cover" />
+          <Image
+            src="/loginBg.png"
+            alt="Massimo"
+            fill
+            className="object-cover"
+          />
         </div>
 
         {/* LOGIN SIDE */}
         <div className="p-10 flex flex-col justify-center items-center gap-8 md:w-1/2">
           <div className="text-center">
-            <h1 className="font-bold text-2xl xl:text-3xl text-gray-800">Welcome to Massimo</h1>
+            <h1 className="font-bold text-2xl xl:text-3xl text-gray-800">
+              Welcome to Massimo
+            </h1>
             <p className="text-gray-500 mt-2">Sign in to manage your orders</p>
           </div>
 
@@ -77,10 +84,11 @@ const LoginPage = () => {
             className="w-full flex items-center justify-center gap-4 p-4 ring-2 ring-orange-100 rounded-xl hover:bg-orange-50 transition-all duration-300 shadow-sm active:scale-95"
           >
             <Image src="/google.png" alt="Google" width={24} height={24} />
-            <span className="text-black font-semibold text-lg">Continue with Google</span>
+            <span className="text-black font-semibold text-lg">
+              Continue with Google
+            </span>
           </button>
         </div>
-
       </div>
     </div>
   );
