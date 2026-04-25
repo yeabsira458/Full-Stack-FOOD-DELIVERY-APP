@@ -3,7 +3,7 @@ import { useAuth } from "@/components/AuthProvider";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
-import { account } from "@/app/utills/appwrite";
+import { account, databases } from "@/app/utills/appwrite";
 import { OAuthProvider } from "appwrite";
 
 const LoginPage = () => {
@@ -11,62 +11,76 @@ const LoginPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (user) {
-      const savedCart = localStorage.getItem("massimo_cart");
-      const hasItems = savedCart ? JSON.parse(savedCart).length > 0 : false;
-      router.push(hasItems ? "/pay" : "/");
-    }
+    const handleSync = async () => {
+      if (user) {
+        try {
+          // TRY TO REGISTER: This creates a document ONLY if it doesn't exist
+          await databases.createDocument(
+            process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
+            process.env.NEXT_PUBLIC_APPWRITE_USER_COLLECTION_ID!,
+            user.$id, // Document ID matches Auth ID for perfect syncing
+            {
+              name: user.name,
+              email: user.email,
+            }
+          );
+          console.log("New user registered successfully.");
+        } catch (err: any) {
+          // IF ALREADY REGISTERED: Appwrite returns 409. We ignore it and log in.
+          if (err.code !== 409) {
+            console.error("Database sync failed:", err.message);
+          }
+        } finally {
+          // ALWAYS REDIRECT: Move user to the app after the check is done
+          const savedCart = localStorage.getItem("massimo_cart");
+          const hasItems = savedCart ? JSON.parse(savedCart).length > 0 : false;
+          router.push(hasItems ? "/pay" : "/");
+        }
+      }
+    };
+
+    handleSync();
   }, [user, router]);
 
   const signInWithGoogle = () => {
     account.createOAuth2Session(
       OAuthProvider.Google,
-      // Change these to your actual active Vercel production URL
-      "https://full-stack-food-delivery-app-rzsi.vercel.app/",
-      "https://full-stack-food-delivery-app-rzsi.vercel.app/login",
+      "https://full-stack-food-delivery-app-rzsi.vercel.app/", // Success URL
+      "https://full-stack-food-delivery-app-rzsi.vercel.app/login" // Failure URL
     );
   };
 
-  if (loading) return <div className="p-4 text-center">Loading...</div>;
+  if (loading) return (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-orange-500"></div>
+    </div>
+  );
 
   return (
     <div className="p-4 min-h-[calc(100vh-6rem)] flex items-center justify-center bg-gray-50">
       <div className="flex flex-col md:flex-row h-full w-full shadow-2xl rounded-md overflow-hidden lg:w-[70%] 2xl:w-1/2 bg-white max-w-[1000px]">
-        {/* IMAGE CONTAINER */}
+        
+        {/* IMAGE SIDE */}
         <div className="relative hidden md:block md:w-1/2 min-h-[400px]">
-          <Image
-            src="/loginBg.png"
-            alt="Login Background"
-            fill
-            className="object-cover"
-          />
+          <Image src="/loginBg.png" alt="Massimo" fill className="object-cover" />
         </div>
 
-        {/* FORM CONTAINER */}
+        {/* LOGIN SIDE */}
         <div className="p-10 flex flex-col justify-center items-center gap-8 md:w-1/2">
           <div className="text-center">
-            <h1 className="font-bold text-2xl xl:text-3xl text-gray-800">
-              Welcome to Massimo
-            </h1>
-            <p className="text-gray-500 mt-2">
-              Sign in or create an account to continue
-            </p>
+            <h1 className="font-bold text-2xl xl:text-3xl text-gray-800">Welcome to Massimo</h1>
+            <p className="text-gray-500 mt-2">Sign in to manage your orders</p>
           </div>
 
           <button
             onClick={signInWithGoogle}
-            className="w-full flex items-center justify-center gap-4 p-4 ring-2 ring-orange-100 rounded-xl hover:bg-orange-50 transition-all duration-300 shadow-sm hover:shadow-md active:scale-95"
+            className="w-full flex items-center justify-center gap-4 p-4 ring-2 ring-orange-100 rounded-xl hover:bg-orange-50 transition-all duration-300 shadow-sm active:scale-95"
           >
             <Image src="/google.png" alt="Google" width={24} height={24} />
-            <span className="text-black font-semibold text-lg">
-              Continue with Google
-            </span>
+            <span className="text-black font-semibold text-lg">Continue with Google</span>
           </button>
-
-          <p className="text-xs text-gray-400 text-center px-4">
-            By continuing, you agree to our terms of service and privacy policy.
-          </p>
         </div>
+
       </div>
     </div>
   );
