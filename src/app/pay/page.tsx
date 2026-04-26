@@ -38,10 +38,11 @@ const PaymentPage = () => {
         ORDER_COLLECTION_ID,
         ID.unique(),
         {
-          userEmail: email, // Matches 'userEmail' required string
-          price: Number(totalPrice), // Matches 'price' double
-          Status: "awaiting payment", // Initial status for bank flow
-          product: JSON.stringify(cart), // Matches 'product' string
+          userEmail: email,
+          price: Number(totalPrice),
+          Status: "awaiting payment",
+          product: JSON.stringify(cart),
+          databaseId: DATABASE_ID, // Adding the missing required attribute
         }
       );
 

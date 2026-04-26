@@ -15,11 +15,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const activeUser = await account.get();
         setUser(activeUser);
 
-        // --- NEW SYNC LOGIC START ---
-        // We call the sync function here because we know we have an activeUser
-        await syncUserToDatabase(activeUser);
-        // --- NEW SYNC LOGIC END ---
-      } catch (error) {
+        // SYNC IN BACKGROUND: If DB fails, we still keep the user logged in
+        try {
+          await syncUserToDatabase(activeUser);
+        } catch (dbError: any) {
+          console.error("Database sync background error:", dbError.message);
+        }
+        
+      } catch (error: any) {
         setUser(null);
       } finally {
         setLoading(false);

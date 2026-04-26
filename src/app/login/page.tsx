@@ -11,42 +11,20 @@ const LoginPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const handleSync = async () => {
-      if (user) {
-        try {
-          // TRY TO REGISTER: This creates a document ONLY if it doesn't exist
-          await databases.createDocument(
-            process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
-            process.env.NEXT_PUBLIC_APPWRITE_USER_COLLECTION_ID!,
-            user.$id, // Document ID matches Auth ID for perfect syncing
-            {
-              name: user.name,
-              email: user.email,
-            },
-          );
-          console.log("New user registered successfully.");
-        } catch (err: any) {
-          // IF ALREADY REGISTERED: Appwrite returns 409. We ignore it and log in.
-          if (err.code !== 409) {
-            console.error("Database sync failed:", err.message);
-          }
-        } finally {
-          // ALWAYS REDIRECT: Move user to the app after the check is done
-          const savedCart = localStorage.getItem("massimo_cart");
-          const hasItems = savedCart ? JSON.parse(savedCart).length > 0 : false;
-          router.push(hasItems ? "/pay" : "/");
-        }
-      }
-    };
-
-    handleSync();
+    if (user) {
+      const savedCart = localStorage.getItem("massimo_cart");
+      const hasItems = savedCart ? JSON.parse(savedCart).length > 0 : false;
+      router.push(hasItems ? "/pay" : "/");
+    }
   }, [user, router]);
 
   const signInWithGoogle = () => {
+    const origin = window.location.origin; 
+    
     account.createOAuth2Session(
       OAuthProvider.Google,
-      "https://full-stack-food-delivery-app-five.vercel.app/", // Success URL
-      "https://full-stack-food-delivery-app-five.vercel.app/login", // Failure URL
+      `${origin}/`,      // Success: goes to Home
+      `${origin}/login` // Failure: stays on Login
     );
   };
 
